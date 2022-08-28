@@ -1,43 +1,50 @@
 #include <iostream>
-#include <string>
 using namespace std;
-
 #include <stack>
-bool checkRedundantBrackets(string expression) {
+int* stockSpan(int *price, int size)  {
 	// Write your code here
-    stack<char>s;
-    string operators="+-*/";
+    stack<int>s;
+    int n=size;
+    int*output=new int[n];
+    s.push(0);
     
-    for(int i=0;i<expression.length();++i)
+    output[0]=1;
+    
+    for(int i=1;i<n;++i)
     {
-        if(expression[i]=='('||operators.find(expression[i])!=string::npos)
+        while(!s.empty()&&price[s.top()]<price[i])
         {
-            s.push(expression[i]);
-        } else if(expression[i]==')')
-        {
-            bool hasOperator =false;
-            
-            while(!s.empty()&&s.top()!='(')
-            {
-                s.pop();
-                hasOperator=true;
-            }
-            if(!hasOperator)
-            {
-                return true;
-            }
-            
-            if(!s.empty())
-            {
-                s.pop();
-            }
+            s.pop();
         }
+        if(s.empty())
+        {
+            output[i]=i+1;
+        }
+        else
+        {
+            output[i]=i-s.top();
+        }
+        s.push(i);
     }
-    return false;
+    return output;
 }
 
 int main() {
-    string input;
-    cin >> input;
-    cout << ((checkRedundantBrackets(input)) ? "true" : "false");
+    int size;
+    cin >> size;
+
+    int *input = new int[size];
+    for (int i = 0; i < size; i++) {
+        cin >> input[i];
+    }
+
+    int *output = stockSpan(input, size);
+    for (int i = 0; i < size; i++) {
+        cout << output[i] << " ";
+    }
+
+    cout << "\n";
+
+    delete[] input;
+    delete[] output;
 }
